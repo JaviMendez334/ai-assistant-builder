@@ -1,0 +1,35 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Variables de entorno
+.env
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Tests
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Compilación
+build/
+dist/
+*.egg-info/
