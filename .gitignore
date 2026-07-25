@@ -1,35 +1,21 @@
 # Entorno virtual
 .venv/
-venv/
 
 # Variables de entorno
 .env
 
-# Caché de Python
+# Python
 __pycache__/
-*.py[cod]
+*.pyc
 
-# VS Code
+# Archivos subidos por usuarios
+uploads/
+
+# IDE
 .vscode/
 
-# PyCharm
-.idea/
-
-# Archivos de sistema
-.DS_Store
-Thumbs.db
+# Base de datos local
+*.sqlite3
 
 # Logs
 *.log
-
-# Tests
-.pytest_cache/
-
-# Coverage
-.coverage
-htmlcov/
-
-# Compilación
-build/
-dist/
-*.egg-info/
