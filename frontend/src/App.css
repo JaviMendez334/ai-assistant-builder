@@ -1,0 +1,102 @@
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#0f172a;
+  color:white;
+}
+
+
+.app {
+  min-height:100vh;
+}
+
+
+.navbar {
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:20px 50px;
+
+}
+
+
+.navbar button {
+
+  background:#2563eb;
+  color:white;
+
+  border:none;
+  padding:12px 20px;
+
+  border-radius:8px;
+
+}
+
+
+.hero {
+
+  display:flex;
+  justify-content:center;
+  gap:60px;
+
+  padding:80px;
+
+}
+
+
+.hero section {
+
+  max-width:500px;
+
+}
+
+
+h2 {
+
+  font-size:48px;
+
+}
+
+
+.primary {
+
+background:#22c55e;
+color:white;
+
+border:none;
+
+padding:15px 30px;
+
+border-radius:10px;
+
+font-size:18px;
+
+}
+
+
+.card {
+
+background:#1e293b;
+
+padding:30px;
+
+border-radius:20px;
+
+width:350px;
+
+}
+
+
+.item {
+
+background:#334155;
+
+margin:15px 0;
+
+padding:15px;
+
+border-radius:10px;
+
+}

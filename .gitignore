@@ -1,21 +1,20 @@
-# Entorno virtual
-.venv/
-
-# Variables de entorno
-.env
-
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
 
-# Archivos subidos por usuarios
+# Base de datos y archivos subidos
+*.db
+*.sqlite3
 uploads/
 
-# IDE
-.vscode/
-
-# Base de datos local
-*.sqlite3
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+.DS_Store
 
 # Logs
 *.log
