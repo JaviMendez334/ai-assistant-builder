@@ -98,6 +98,11 @@ La herramienta search_documents recibe:
 
 NO envíes conversation_id dentro de los argumentos.
 El sistema lo agrega automáticamente.
+
+
+REGLAS DE HERRAMIENTAS FINANCIERAS:
+- Si preguntan por saldos, cuánto debe un cliente, compras o abonos (ej. "cuánto debe Mafe"), usa OBLIGATORIAMENTE 'get_customer_balance' o 'record_transaction'.
+- NO uses 'search_documents' para buscar nombres de clientes o deudas personales.
 """
 
     messages = [
@@ -292,12 +297,10 @@ El sistema lo agrega automáticamente.
             }
         )
 
-    # ============================================================
-    # RESPUESTA FINAL
-    #
+    # ============================================================# ============================================================
+    # RESPUESTA FINAL#
     # IMPORTANTE:
-    # tools=None evita que el modelo vuelva a llamar
-    # search_documents.
+    # tools=None evita que el modelo vuelva a llamar herramientas.
     # ============================================================
 
     messages.append(
@@ -306,19 +309,11 @@ El sistema lo agrega automáticamente.
             "content": """
 Ya ejecutaste las herramientas necesarias.
 
-Ahora debes responder al usuario utilizando
-ÚNICAMENTE la información disponible en el historial
-y el resultado de las herramientas que acabas de recibir.
-
-NO puedes utilizar ninguna herramienta adicional.
-
-Si la información recuperada no permite responder
-exactamente la pregunta, dilo claramente.
-
-No inventes datos.
-
-Si solamente se encontraron ejemplos o elementos
-representativos, no los presentes como el total general.
+INSTRUCCIONES PARA LA RESPUESTA FINAL:
+1. Tu respuesta debe basarse DIRECTA Y EXCLUSIVAMENTE en el resultado que retornaron las herramientas en el paso anterior.
+2. Si la herramienta fue 'record_transaction' o 'get_customer_balance', confirma de manera amable, clara y exacta la operación realizada: nombre del cliente, monto abonado/cargado, total acumulado y saldo pendiente restante reportado.
+3. NO menciones datos de empresas, facturaciones globales ni información documental a menos que el usuario lo haya solicitado.
+4. No inventes datos. Si la herramienta retornó un mensaje o error, transmítelo claramente al usuario.
 """,
         }
     )
@@ -333,11 +328,9 @@ representativos, no los presentes como el total general.
     )
 
     if respuesta_final is None:
-
         print(
             "❌ La respuesta final devolvió None"
         )
-
         return (
             "No pude generar una respuesta "
             "en este momento."

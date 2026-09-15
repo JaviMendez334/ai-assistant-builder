@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import backend.tools.registry
 
+# Routers
 from backend.routers.home import router as home_router
 from backend.routers.auth import router as auth_router
 from backend.routers.profile import router as profile_router
@@ -11,14 +11,17 @@ from backend.routers.assistants import router as assistants_router
 from backend.routers.conversations import router as conversations_router
 from backend.routers.documents import router as documents_router
 from backend.routers.chat import router as chat_router
+from backend.routers.whatsapp import router as whatsapp_router
 
+# Registro de herramientas
+import backend.tools.search_documents_tool
+import backend.tools.sheets_tool
 
 app = FastAPI(
     title="AI Assistant Builder API",
     version="1.0.0",
     description="Plataforma para crear asistentes IA empresariales con RAG y herramientas.",
 )
-
 
 # ==============================
 # CORS CONFIG
@@ -37,7 +40,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # ==============================
 # ROUTERS
 # ==============================
@@ -50,3 +52,5 @@ app.include_router(assistants_router)
 app.include_router(conversations_router)
 app.include_router(documents_router)
 app.include_router(chat_router)
+app.include_router(whatsapp_router)
+
