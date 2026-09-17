@@ -24,11 +24,14 @@ class SearchDocumentsTool(
         self,
         question: str,
         conversation_id: int,
+        tenant_id: int | None = None,
+        **kwargs,
     ):
 
         resultados = buscar_chunks(
             pregunta=question,
             conversation_id=conversation_id,
+            tenant_id=tenant_id,
         )
 
         if not resultados:
@@ -77,4 +80,3 @@ class SearchDocumentsTool(
                 },
             },
         }
-    

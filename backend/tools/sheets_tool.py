@@ -15,6 +15,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 CREDENTIALS_PATH = str(BASE_DIR / "config" / "google_credentials.json")
 
 
+def _obtener_worksheet(client: gspread.Client, tenant_id: int | None = None):
+    """Resuelve la hoja según el tenant_id o usa la predeterminada."""
+    base_sheet_name = os.getenv("GOOGLE_SHEET_NAME", "Control de Ventas y Abonos")
+    
+    # Si viene un tenant_id, busca primero si existe una hoja dedicada (ej: "Control de Ventas y Abonos_1")
+    if tenant_id:
+        tenant_specific_name = f"{base_sheet_name}_{tenant_id}"
+        try:
+            return client.open(tenant_specific_name).sheet1
+        except Exception:
+            pass  # Si no existe archivo independiente, abre el principal
+
+    spreadsheet = client.open(base_sheet_name)
+    
+    # Si existe una pestaña nombrada con el tenant (ej: "Tenant_1") la usa, si no, usa la primera
+    if tenant_id:
+        try:
+            return spreadsheet.worksheet(f"Tenant_{tenant_id}")
+        except Exception:
+            pass
+
+    return spreadsheet.sheet1
+
+
 class RecordTransactionTool(BaseTool):
     """
     Registra compras nuevas o actualiza abonos y saldos de clientes existentes en Google Sheets.
@@ -80,6 +104,7 @@ class RecordTransactionTool(BaseTool):
         total_amount: float = 0.0,
         payment_type: str = "Abono",
         notes: str = "Sin observaciones",
+        tenant_id: int | None = None,
         **kwargs
     ) -> dict:
         try:
@@ -88,14 +113,11 @@ class RecordTransactionTool(BaseTool):
 
             creds = Credentials.from_service_account_file(CREDENTIALS_PATH, scopes=SCOPES)
             client = gspread.authorize(creds)
-            sheet_name = os.getenv("GOOGLE_SHEET_NAME", "Control de Ventas y Abonos")
-            worksheet = client.open(sheet_name).sheet1
+            worksheet = _obtener_worksheet(client, tenant_id)
 
-            # Obtener todas las filas de la hoja
             all_values = worksheet.get_all_values()
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # Estructura: A: Fecha | B: Cliente | C: Concepto | D: Monto Abono | E: Tipo de pago | F: Observaciones | G: Compra Total | H: Deuda
             fila_cliente = None
             for idx, row in enumerate(all_values[1:], start=2):
                 if len(row) > 1 and row[1].strip().lower() == customer_name.strip().lower():
@@ -103,10 +125,8 @@ class RecordTransactionTool(BaseTool):
                     break
 
             if fila_cliente:
-                # El cliente ya existe: actualizar la fila existente
                 row_idx, row_data = fila_cliente
                 
-                # Extraer valores previos
                 try:
                     abono_anterior = float(str(row_data[3]).replace(",", "").replace("$", "").strip() or 0)
                 except (IndexError, ValueError):
@@ -117,11 +137,9 @@ class RecordTransactionTool(BaseTool):
                 except (IndexError, ValueError):
                     compra_total = float(total_amount) if total_amount > 0 else 0.0
 
-                # Sumar el nuevo abono
                 nuevo_abono_acumulado = abono_anterior + float(paid_amount)
                 nueva_deuda = max(0.0, compra_total - nuevo_abono_acumulado)
 
-                # Actualizar campos en la hoja (A: Hora, D: Abono Acumulado, E: Tipo, F: Notas, H: Deuda)
                 worksheet.update_cell(row_idx, 1, now)
                 worksheet.update_cell(row_idx, 4, nuevo_abono_acumulado)
                 worksheet.update_cell(row_idx, 5, payment_type)
@@ -138,7 +156,6 @@ class RecordTransactionTool(BaseTool):
                 }
 
             else:
-                # El cliente es nuevo: crear nueva fila
                 compra = float(total_amount) if total_amount > 0 else float(paid_amount)
                 deuda = max(0.0, compra - float(paid_amount))
 
@@ -200,15 +217,14 @@ class GetCustomerBalanceTool(BaseTool):
             }
         }
 
-    def execute(self, customer_name: str, **kwargs) -> dict:
+    def execute(self, customer_name: str, tenant_id: int | None = None, **kwargs) -> dict:
         try:
             if not os.path.exists(CREDENTIALS_PATH):
                 return {"success": False, "error": "No se encontraron credenciales de Google."}
 
             creds = Credentials.from_service_account_file(CREDENTIALS_PATH, scopes=SCOPES)
             client = gspread.authorize(creds)
-            sheet_name = os.getenv("GOOGLE_SHEET_NAME", "Control de Ventas y Abonos")
-            worksheet = client.open(sheet_name).sheet1
+            worksheet = _obtener_worksheet(client, tenant_id)
 
             records = worksheet.get_all_records()
             if not records:
@@ -235,6 +251,5 @@ class GetCustomerBalanceTool(BaseTool):
             return {"success": False, "error": f"Error al consultar Google Sheets: {str(e)}"}
 
 
-# Registrar herramientas
 registry.register(RecordTransactionTool())
 registry.register(GetCustomerBalanceTool())

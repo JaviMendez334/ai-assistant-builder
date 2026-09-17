@@ -35,7 +35,12 @@ export default function Sidebar() {
       name: "Configuración",
       path: "/settings",
       icon: <Settings size={19} />
-    }
+    },
+    {
+      name: "Importar Datos", // O "Documentos / Importar"
+      path: "/importer",
+      icon: <FileText size={19} />
+    },
   ];
 
   return (

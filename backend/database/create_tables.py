@@ -3,6 +3,7 @@ from backend.models.user import Base
 
 from backend.models.assistant import Assistant
 from backend.models.assistant_tool import AssistantTool
+from backend.models.product import Product
 
 Base.metadata.create_all(bind=engine)
 

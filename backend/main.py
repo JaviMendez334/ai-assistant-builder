@@ -1,6 +1,13 @@
+from dotenv import load_dotenv
+load_dotenv()  # Carga las variables del archivo .env al entorno
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Base de datos y Modelos para asegurar la creación de tablas
+from backend.database.database import engine, Base
+import backend.models.tenant
+import backend.models.user
 
 # Routers
 from backend.routers.home import router as home_router
@@ -12,6 +19,7 @@ from backend.routers.conversations import router as conversations_router
 from backend.routers.documents import router as documents_router
 from backend.routers.chat import router as chat_router
 from backend.routers.whatsapp import router as whatsapp_router
+from backend.routers.excel_upload import router as excel_router
 
 # Registro de herramientas
 import backend.tools.search_documents_tool
@@ -22,6 +30,11 @@ app = FastAPI(
     version="1.0.0",
     description="Plataforma para crear asistentes IA empresariales con RAG y herramientas.",
 )
+
+# ==============================
+# CREACIÓN AUTOMÁTICA DE TABLAS
+# ==============================
+Base.metadata.create_all(bind=engine)
 
 # ==============================
 # CORS CONFIG
@@ -53,4 +66,4 @@ app.include_router(conversations_router)
 app.include_router(documents_router)
 app.include_router(chat_router)
 app.include_router(whatsapp_router)
-
+app.include_router(excel_router)
