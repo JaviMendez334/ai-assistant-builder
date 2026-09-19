@@ -343,10 +343,23 @@ python test_search.py
 
 ## Capturas de Pantalla
 
-* `docs/images/dashboard.png` - Panel de control y métricas generales
-* `docs/images/assistants_builder.png` - Creación, parametrización y asignación de herramientas al asistente
-* `docs/images/excel_upload.png` - Módulo de carga masiva de catálogos
-* `docs/images/whatsapp_demo.png` - Consultas operativas y ajuste de existencias por WhatsApp
+### Panel de Control y Métricas
+![Dashboard](Docs/Images/dashboard.png)
+
+### Configuración y Parametrización del Asistente
+![Assistants Builder](Docs/Images/assistants_builder.png)
+
+### Vista Detallada del Asistente y Herramientas
+![Assistant Detail](Docs/Images/assistant_detail.png)
+
+### Carga e Ingesta Masiva de Inventario (Excel)
+![Excel Upload](Docs/Images/excel_upload.png)
+
+### Interacción Operativa vía WhatsApp Business
+![WhatsApp Demo](Docs/Images/whatsapp_demo.png)
+
+### Comandos de Administración vía WhatsApp
+![WhatsApp Admin](Docs/Images/whatsapp_admin.png)
 
 ---
 
