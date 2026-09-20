@@ -310,7 +310,7 @@ En otra terminal:
 cd frontend
 npm run dev
 ```
-Disponible en: `http://localhost:5173`
+Disponible en: `http://localhost:5175`
 
 ### 4. Conexión del Webhook con Meta (Túnel Ngrok)
 ```bash
